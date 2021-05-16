@@ -44,6 +44,7 @@
 			
 
 			scene = new THREE.Scene();
+			scene.background = new THREE.Color('grey');
 			// scene.scale.y = -1
 			// scene.scale.x = -1
 			scene.scale.x = -1
@@ -87,6 +88,7 @@
 					let vectors_vertical_left = [];
 					let vectors_vertical_right = [];
 					let vectors_top_frame = [];
+					let vectors_glass = [];
 
 
 					// getting coordinates for low part of window
@@ -104,6 +106,37 @@
 
 					const geometry = new ConvexGeometry(vectors);
 					const material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+
+					function hsl(h, s, l) {
+						return (new THREE.Color()).setHSL(h, s, l);
+					}
+
+					const color = hsl(0 / 8, 1, .5);
+
+					const glass_material = new THREE.MeshPhongMaterial({
+						color,
+						opacity: 0.5,
+						transparent: true,
+					});
+
+					// const r = 'assets/env/texture1/';
+					// const urls = [
+					// 	r + 'px.jpg',
+					// 	r + 'nx.jpg',
+					// 	r + 'py.jpg',
+					// 	r + 'ny.jpg',
+					// 	r + 'pz.jpg',
+					// 	r + 'nz.jpg'
+					// ];
+					// this.textureCube = new THREE.CubeTextureLoader().load(urls);
+
+					// const material = new THREE.MeshPhongMaterial({
+					// 	color: 0xffffff,
+					// 	     envMap: that.textureCube,
+					// 	refractionRatio: 0.8
+					// });
+
+					// const glass_material = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
 					mesh = new THREE.Mesh(geometry, material);
 
@@ -200,7 +233,9 @@
 						vectors_vertical_right.push(new THREE.Vector3(third_x, third_y, data.windows[i][0].sill_height + data.windows[i][0].bottom_frame_height + data.windows[i][0].vertical_frame_height));
 						vectors_vertical_right.push(new THREE.Vector3(fourth_x, fourth_y, data.windows[i][0].sill_height + data.windows[i][0].bottom_frame_height + data.windows[i][0].vertical_frame_height));
 
-						///
+						/// drawing glass
+
+
 
 						const geometry2 = new ConvexGeometry(vectors_vertical_left);
 
@@ -221,6 +256,24 @@
 						const geometry4 = new ConvexGeometry(vectors_top_frame);
 
 						mesh = new THREE.Mesh(geometry4, material);
+
+						scene.add(mesh);
+
+						///vectors_vertical_right
+
+						vectors_glass.push(vectors_vertical_left[2]);
+						vectors_glass.push(vectors_vertical_left[3]);
+						vectors_glass.push(vectors_vertical_left[6]);
+						vectors_glass.push(vectors_vertical_left[7]);
+
+						vectors_glass.push(vectors_vertical_right[2]);
+						vectors_glass.push(vectors_vertical_right[3]);
+						vectors_glass.push(vectors_vertical_right[6]);
+						vectors_glass.push(vectors_vertical_right[7]);
+
+						const geometry5 = new ConvexGeometry(vectors_glass);
+
+						mesh = new THREE.Mesh(geometry5, glass_material);
 
 						scene.add(mesh);
 						
